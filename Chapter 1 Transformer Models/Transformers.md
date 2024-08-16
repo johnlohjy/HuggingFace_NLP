@@ -107,3 +107,37 @@ Note that the first attention layer in a decoder block (referencing original tra
 - Checkpoints: Weights that will be loaded in a given architecture
 
 - Model: Umbrella term that isn’t as precise as “architecture” or “checkpoint”: it can mean both. This course will specify architecture or checkpoint when it matters to reduce ambiguity
+
+## Bias and Limitations
+
+Pretrained models (and fine-tuning them for use) have limitations
+- To enable pretraining on large amountsof data, researchers often scrape all the content they can find, taking the best and worst of what is available on the internet
+
+Example: fill-mask pipeline with BERT Model
+
+```
+from transformers import pipeline
+
+unmasker = pipeline("fill-mask", model="bert-base-uncased")
+result = unmasker("This man works as a [MASK].")
+print([r["token_str"] for r in result])
+
+result = unmasker("This woman works as a [MASK].")
+print([r["token_str"] for r in result])
+```
+
+```
+['lawyer', 'carpenter', 'doctor', 'waiter', 'mechanic']
+['nurse', 'waitress', 'teacher', 'maid', 'prostitute']
+```
+
+When asked to fill in the missing word in these two sentences, the model gives only one gender-free answer (waiter/waitress). The others are work occupations usually associated with one specific gender
+
+This happens even though BERT is one of the rare Transformer models not built by scraping data from all over the internet, but rather using apparently neutral data
+
+Therefore keep in mind that the original model could very easily generate sexist, racist or homophobic content and that fine-tuning the model on your data won’t make this intrinsic bias disappear
+
+## Summary
+
+![alt text](images/Summary_of_Transformers.PNG)
+
